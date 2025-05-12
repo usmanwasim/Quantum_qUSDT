@@ -1,10 +1,9 @@
 [
   {
     "inputs": [
-      { "internalType": "address", "name": "_owner", "type": "address" },
       { "internalType": "address", "name": "_dist", "type": "address" },
-      { "internalType": "address", "name": "_usdt", "type": "address" },
-      { "internalType": "address", "name": "_token", "type": "address" }
+      { "internalType": "address", "name": "_token", "type": "address" },
+      { "internalType": "address", "name": "_aggregator", "type": "address" }
     ],
     "stateMutability": "nonpayable",
     "type": "constructor"
@@ -49,6 +48,13 @@
   },
   {
     "inputs": [],
+    "name": "aggregatorInterface",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "amountRaised",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
@@ -56,10 +62,18 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "_referrer", "type": "address" },
-      { "internalType": "uint256", "name": "_amount", "type": "uint256" }
+      { "internalType": "address", "name": "_referrer", "type": "address" }
     ],
     "name": "buyToken",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "_new", "type": "address" }
+    ],
+    "name": "changeAggregator",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -74,18 +88,20 @@
     "type": "function"
   },
   {
-    "inputs": [
-      { "internalType": "address", "name": "_new", "type": "address" }
-    ],
-    "name": "changeUsdt",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [],
     "name": "distributor",
     "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "_amount", "type": "uint256" }
+    ],
+    "name": "ethToToken",
+    "outputs": [
+      { "internalType": "uint256", "name": "numberOfTokens", "type": "uint256" }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
@@ -113,6 +129,13 @@
   {
     "inputs": [],
     "name": "getCurrentTime",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getLatestPrice",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
@@ -216,27 +239,9 @@
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "_percent", "type": "uint256" }
-    ],
-    "name": "setRefPercent",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
       { "internalType": "address", "name": "_newtoken", "type": "address" }
     ],
     "name": "setToken",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "uint256", "name": "_price", "type": "uint256" }
-    ],
-    "name": "setTokenPrice",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -285,24 +290,6 @@
     "name": "transferOwnership",
     "outputs": [],
     "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "uint256", "name": "_amount", "type": "uint256" }
-    ],
-    "name": "usdToToken",
-    "outputs": [
-      { "internalType": "uint256", "name": "numberOfTokens", "type": "uint256" }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "usdt",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
-    "stateMutability": "view",
     "type": "function"
   },
   { "stateMutability": "payable", "type": "receive" }

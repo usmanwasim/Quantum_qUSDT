@@ -17,10 +17,11 @@ import { toast } from "react-toastify";
 import { useAppKitAccount, useAppKit } from "@reown/appkit/react";
 
 import { isAddress, formatEther, parseUnits, formatUnits } from "viem";
-import { readContract, writeContract } from "@wagmi/core";
+import { getBalance, readContract, writeContract } from "@wagmi/core";
 import abi from "../utils/Abi.json";
 import tokenAbi from "../utils/TokenAbi.json";
 import { wagmiAdapter } from "../wagmi";
+import { log } from "util";
 
 const StyledTextField = styled(TextField)(({ theme }) => ({
   "& .MuiOutlinedInput-root": {
@@ -72,7 +73,7 @@ const CountdownTimer = () => {
     return { days: 0, hours: 0, minutes: 0, seconds: 0 }; // Presale ended
   };
 
-  const presaleEndTime = 1749540920; //update time here in seconds
+  const presaleEndTime = 1749673797; //update time here in seconds
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -104,6 +105,7 @@ const CountdownTimer = () => {
 
 const Hero = () => {
   const [amount, setAmount] = useState("");
+  const [Receive, setReceive] = useState("0");
   const [tokenPrice, setTokenPrice] = useState();
   const [decimal, setDecimal] = useState("");
   const [referralPercent, setReferralPercent] = useState();
@@ -116,38 +118,40 @@ const Hero = () => {
 
   useEffect(() => {
     const ReadFunctions = async () => {
-      let decimals = await readContract(wagmiAdapter.wagmiConfig, {
-        abi: tokenAbi,
-        address: import.meta.env.VITE_TOKEN_ADDRESS,
-        functionName: "decimals",
-      });
-      setDecimal(decimals.toString());
-      let tokenPerUsd = await readContract(wagmiAdapter.wagmiConfig, {
-        abi,
-        address: import.meta.env.VITE_CONTRACT_ADDRESS,
-        functionName: "tokenPerUsd",
-      });
-
-      tokenPerUsd = 1 / Number(formatEther(tokenPerUsd.toString()));
-      setTokenPrice(tokenPerUsd);
       const referralpercent = await readContract(wagmiAdapter.wagmiConfig, {
         abi,
         address: import.meta.env.VITE_CONTRACT_ADDRESS,
         functionName: "referralpercent",
       });
       setReferralPercent(referralpercent.toString());
+
       const getProgress = await readContract(wagmiAdapter.wagmiConfig, {
         abi,
         address: import.meta.env.VITE_CONTRACT_ADDRESS,
         functionName: "getProgress",
       });
       setProgress(getProgress.toString());
+
+      let tokenPerUsd = await readContract(wagmiAdapter.wagmiConfig, {
+        abi,
+        address: import.meta.env.VITE_CONTRACT_ADDRESS,
+        functionName: "tokenPerUsd",
+      });
+      tokenPerUsd = 1 / Number(formatEther(tokenPerUsd.toString()));
+      setTokenPrice(tokenPerUsd);
+
+      let decimals = await readContract(wagmiAdapter.wagmiConfig, {
+        abi: tokenAbi,
+        address: import.meta.env.VITE_TOKEN_ADDRESS,
+        functionName: "decimals",
+      });
+      setDecimal(decimals.toString());
     };
 
     ReadFunctions();
   }, [isConnected]);
 
-  const calculateReceiveAmount = () => {
+  const calculateReceiveAmount = async () => {
     try {
       if (!amount || amount === "") return 0;
 
@@ -158,11 +162,19 @@ const Hero = () => {
         return 0;
       }
 
-      const baseAmount = parsedAmount / tokenPrice;
-      if (!isNaN(baseAmount) && !Number.isInteger(baseAmount)) {
-        return baseAmount.toFixed(4);
-      }
-      return baseAmount;
+      const receiveAmount = await readContract(wagmiAdapter.wagmiConfig, {
+        abi,
+        address: import.meta.env.VITE_CONTRACT_ADDRESS,
+        functionName: "ethToToken",
+        args: [parseUnits(parsedAmount.toString(), decimal)],
+      });
+
+      let a = Number(formatUnits(receiveAmount.toString(), decimal));
+
+      // Set to 4 decimals only if it's a floating number
+      a = a % 1 !== 0 ? parseFloat(a.toFixed(4)) : a;
+
+      setReceive(a);
     } catch (err) {
       console.log(err);
       toast.error("Error calculating token amount");
@@ -170,14 +182,15 @@ const Hero = () => {
     }
   };
 
+  useEffect(() => {
+    calculateReceiveAmount();
+  }, [amount]);
+
   const handleMaxClick = async () => {
-    const usdtBalance = await readContract(wagmiAdapter.wagmiConfig, {
-      abi: tokenAbi,
-      address: import.meta.env.VITE_TOKEN_ADDRESS,
-      functionName: "balanceOf",
-      args: [address],
+    const ethBalance = await getBalance(wagmiAdapter.wagmiConfig, {
+      address,
     });
-    setAmount(formatUnits(usdtBalance, decimal).toString());
+    setAmount(Number(ethBalance.formatted).toFixed(6));
   };
 
   const handleBuyTokens = async () => {
@@ -194,32 +207,12 @@ const Hero = () => {
         referral = "0x0000000000000000000000000000000000000000";
       }
 
-      const allowance = await readContract(wagmiAdapter.wagmiConfig, {
-        abi: tokenAbi,
-        address: import.meta.env.VITE_TOKEN_ADDRESS,
-        functionName: "allowance",
-        args: [address, import.meta.env.VITE_CONTRACT_ADDRESS],
-      });
-
-      if (formatUnits(allowance, decimal) < amount) {
-        const tx = await writeContract(wagmiAdapter.wagmiConfig, {
-          abi: tokenAbi,
-          address: import.meta.env.VITE_TOKEN_ADDRESS,
-          functionName: "approve",
-          args: [
-            import.meta.env.VITE_CONTRACT_ADDRESS,
-            parseUnits(amount, decimal),
-          ],
-        });
-        console.log(tx);
-        toast.success("Approval sent successfully");
-      }
-
       const tx = await writeContract(wagmiAdapter.wagmiConfig, {
         address: import.meta.env.VITE_CONTRACT_ADDRESS,
         abi,
         functionName: "buyToken",
-        args: [referral, parseUnits(amount, decimal)],
+        args: [referral],
+        value: parseUnits(amount, decimal),
       });
       console.log(tx);
       toast.success("Transaction sent successfully");
@@ -495,7 +488,7 @@ const Hero = () => {
                 </Typography>
                 <StyledTextField
                   fullWidth
-                  value={`${calculateReceiveAmount()} qUSDT`}
+                  value={`${Receive} qUSDT`}
                   readOnly
                   InputProps={{
                     endAdornment: (
