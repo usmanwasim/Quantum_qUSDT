@@ -456,7 +456,7 @@ const Hero = () => {
                   fullWidth
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
-                  placeholder={`Amount in USDT`}
+                  placeholder={`Amount in ETH`}
                   type="number"
                   InputProps={{
                     endAdornment: (
