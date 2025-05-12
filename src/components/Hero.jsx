@@ -16,8 +16,8 @@ import { Wallet, Token, CopyAll } from "@mui/icons-material";
 import { toast } from "react-toastify";
 import { useAppKitAccount, useAppKit } from "@reown/appkit/react";
 
-import { parseEther, isAddress, formatEther } from "viem";
-import { readContract, writeContract, getBalance } from "@wagmi/core";
+import { isAddress, formatEther, parseUnits, formatUnits } from "viem";
+import { readContract, writeContract } from "@wagmi/core";
 import abi from "../utils/Abi.json";
 import tokenAbi from "../utils/TokenAbi.json";
 import { wagmiAdapter } from "../wagmi";
@@ -105,6 +105,7 @@ const CountdownTimer = () => {
 const Hero = () => {
   const [amount, setAmount] = useState("");
   const [tokenPrice, setTokenPrice] = useState();
+  const [decimal, setDecimal] = useState("");
   const [referralPercent, setReferralPercent] = useState();
   const [progress, setProgress] = useState();
   const { isConnected, address } = useAppKitAccount();
@@ -115,6 +116,12 @@ const Hero = () => {
 
   useEffect(() => {
     const ReadFunctions = async () => {
+      let decimals = await readContract(wagmiAdapter.wagmiConfig, {
+        abi: tokenAbi,
+        address: import.meta.env.VITE_TOKEN_ADDRESS,
+        functionName: "decimals",
+      });
+      setDecimal(decimals.toString());
       let tokenPerUsd = await readContract(wagmiAdapter.wagmiConfig, {
         abi,
         address: import.meta.env.VITE_CONTRACT_ADDRESS,
@@ -170,7 +177,7 @@ const Hero = () => {
       functionName: "balanceOf",
       args: [address],
     });
-    setAmount(formatEther(usdtBalance).toString());
+    setAmount(formatUnits(usdtBalance, decimal).toString());
   };
 
   const handleBuyTokens = async () => {
@@ -194,12 +201,15 @@ const Hero = () => {
         args: [address, import.meta.env.VITE_CONTRACT_ADDRESS],
       });
 
-      if (allowance < parseEther(amount)) {
+      if (formatUnits(allowance, decimal) < amount) {
         const tx = await writeContract(wagmiAdapter.wagmiConfig, {
           abi: tokenAbi,
           address: import.meta.env.VITE_TOKEN_ADDRESS,
           functionName: "approve",
-          args: [import.meta.env.VITE_CONTRACT_ADDRESS, parseEther(amount)],
+          args: [
+            import.meta.env.VITE_CONTRACT_ADDRESS,
+            parseUnits(amount, decimal),
+          ],
         });
         console.log(tx);
         toast.success("Approval sent successfully");
@@ -209,7 +219,7 @@ const Hero = () => {
         address: import.meta.env.VITE_CONTRACT_ADDRESS,
         abi,
         functionName: "buyToken",
-        args: [referral, parseEther(amount)],
+        args: [referral, parseUnits(amount, decimal)],
       });
       console.log(tx);
       toast.success("Transaction sent successfully");
