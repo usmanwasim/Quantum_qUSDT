@@ -5,14 +5,22 @@ import {
   Grid,
   Card,
   CardContent,
-  Stack,
   Divider,
+  TableContainer,
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+  IconButton,
 } from "@mui/material";
 import SecurityIcon from "@mui/icons-material/Security";
 import SpeedIcon from "@mui/icons-material/Speed";
 import GroupsIcon from "@mui/icons-material/Groups";
+import { CopyAll } from "@mui/icons-material";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import aboutImg from "../assets/Qusdt-About.png";
+import { toast } from "react-toastify";
 
 const features = [
   {
@@ -127,77 +135,77 @@ const About = () => {
               processing times.
             </Typography>
 
-            <Box sx={{ mt: 4 }}>
-              <Typography variant="h6" gutterBottom>
-                Token Distribution
-              </Typography>
-              <Grid container spacing={2}>
-                <Grid size={{ xs: 6 }}>
-                  <Stack direction="row" spacing={1} alignItems="center">
-                    <Box
-                      sx={{
-                        width: 16,
-                        height: 16,
-                        borderRadius: "50%",
-                        bgcolor: "primary.main",
-                      }}
-                    />
-                    <Typography variant="body2">Presale: 40%</Typography>
-                  </Stack>
-                </Grid>
-                <Grid size={{ xs: 6 }}>
-                  <Stack direction="row" spacing={1} alignItems="center">
-                    <Box
-                      sx={{
-                        width: 16,
-                        height: 16,
-                        borderRadius: "50%",
-                        bgcolor: "secondary.main",
-                      }}
-                    />
-                    <Typography variant="body2">Team: 15%</Typography>
-                  </Stack>
-                </Grid>
-                <Grid size={{ xs: 6 }}>
-                  <Stack direction="row" spacing={1} alignItems="center">
-                    <Box
-                      sx={{
-                        width: 16,
-                        height: 16,
-                        borderRadius: "50%",
-                        bgcolor: "success.main",
-                      }}
-                    />
-                    <Typography variant="body2">Liquidity: 25%</Typography>
-                  </Stack>
-                </Grid>
-                <Grid size={{ xs: 6 }}>
-                  <Stack direction="row" spacing={1} alignItems="center">
-                    <Box
-                      sx={{
-                        width: 16,
-                        height: 16,
-                        borderRadius: "50%",
-                        bgcolor: "warning.main",
-                      }}
-                    />
-                    <Typography variant="body2">Marketing: 10%</Typography>
-                  </Stack>
-                </Grid>
-                <Grid size={{ xs: 6 }}>
-                  <Stack direction="row" spacing={1} alignItems="center">
-                    <Box
-                      sx={{
-                        width: 16,
-                        height: 16,
-                        borderRadius: "50%",
-                        bgcolor: "info.main",
-                      }}
-                    />
-                    <Typography variant="body2">Reserve: 10%</Typography>
-                  </Stack>
-                </Grid>
-              </Grid>
+            <Box>
+              <TableContainer sx={{ mt: 4 }}>
+                <Table size="small" border={2}>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell sx={{ border: 1, fontWeight: 700 }}>
+                        Parameter
+                      </TableCell>
+                      <TableCell
+                        align="center"
+                        sx={{ border: 1, fontWeight: 700 }}
+                      >
+                        Details
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {[
+                      {
+                        name: "Official Contract",
+                        value: "0x64684f4978F8ad9E67c2e19ca98d1F9B00CFE3A1",
+                      },
+                      { name: "Token Name", value: "Quantum" },
+                      { name: "Symbol", value: "qUSDT" },
+                      { name: "Network", value: "Ethereum (ERC-20)" },
+                      {
+                        name: "Total Supply",
+                        value: "100,000,000,000 qUSDT",
+                      },
+                    ].map((row) => (
+                      <TableRow>
+                        <TableCell
+                          component="th"
+                          scope="row"
+                          sx={{
+                            border: 1,
+                            fontWeight: 500,
+                          }}
+                        >
+                          {row.name}
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          sx={{ border: 1, position: "relative" }}
+                        >
+                          {row.value}
+                          {row.name === "Official Contract" && (
+                            <IconButton
+                              sx={{
+                                position: "absolute",
+                                top: 0,
+                                right: 0,
+                                width: 30,
+                                height: 30,
+                              }}
+                              onClick={() => {
+                                navigator.clipboard.writeText(
+                                  "0x64684f4978F8ad9E67c2e19ca98d1F9B00CFE3A1"
+                                );
+                                toast.success("Copied to clipboard");
+                              }}
+                            >
+                              <CopyAll />
+                            </IconButton>
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
             </Box>
           </Grid>
         </Grid>
