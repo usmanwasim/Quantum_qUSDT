@@ -22,6 +22,13 @@ import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import aboutImg from "../assets/Qusdt-About.png";
 import { toast } from "react-toastify";
 
+import img1 from "../assets/etherscan.png";
+import img2 from "../assets/coinmarketcap.png";
+import img3 from "../assets/dextool.png";
+import img4 from "../assets/uniswap.png";
+import img5 from "../assets/quantum.png";
+import Marque from "./Marque";
+
 const features = [
   {
     icon: <SecurityIcon sx={{ fontSize: 40, color: "primary.main" }} />,
@@ -49,6 +56,23 @@ const features = [
     description:
       "Compatible with multiple blockchain networks, providing flexibility and wider adoption opportunities.",
   },
+];
+
+const marqueeData = [
+  {
+    image: img1,
+    link: "https://etherscan.io/address/0x64684f4978F8ad9E67c2e19ca98d1F9B00CFE3A1",
+  },
+  { image: img2, link: "https://coinmarketcap.com/currencies/qusdt-net/" },
+  {
+    image: img3,
+    link: "https://www.dextools.io/app/en/ether/pair-explorer/0x5572725629fc479894c296d7a55ffaa7c6830b6f?t=1747387922325",
+  },
+  {
+    image: img4,
+    link: "https://app.uniswap.org/explore/tokens/ethereum/0x64684f4978f8ad9e67c2e19ca98d1f9b00cfe3a1",
+  },
+  { image: img5, link: "https://swap.qusdt.net/" },
 ];
 
 const About = () => {
@@ -164,8 +188,8 @@ const About = () => {
                         name: "Total Supply",
                         value: "100,000,000,000 qUSDT",
                       },
-                    ].map((row) => (
-                      <TableRow>
+                    ].map((row, i) => (
+                      <TableRow key={i}>
                         <TableCell
                           component="th"
                           scope="row"
@@ -260,6 +284,13 @@ const About = () => {
           </Grid>
         </Box>
       </Container>
+      <Box sx={{ mt: 10 }}>
+        <Marque
+          data={marqueeData}
+          title=" Listings & Partnerships"
+          onClick={true}
+        />
+      </Box>
     </Box>
   );
 };

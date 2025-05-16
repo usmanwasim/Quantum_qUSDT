@@ -22,6 +22,13 @@ import purchase from "../assets/Purchase.png";
 import verify from "../assets/Verify.png";
 import claim from "../assets/Claim.png";
 
+import img1 from "../assets/parteners/img1.png";
+import img2 from "../assets/parteners/img2.png";
+import img3 from "../assets/parteners/img3.png";
+import img4 from "../assets/parteners/img4.png";
+import img5 from "../assets/parteners/img5.png";
+import Marque from "./Marque";
+
 const steps = [
   {
     label: "Connect Your Wallet",
@@ -50,6 +57,24 @@ const steps = [
       "After the presale ends, you can claim your tokens directly to your wallet and start using them in our ecosystem.",
     icon: <CurrencyExchangeIcon />,
     image: claim,
+  },
+];
+
+const marqueeData = [
+  {
+    image: img1,
+  },
+  {
+    image: img2,
+  },
+  {
+    image: img3,
+  },
+  {
+    image: img4,
+  },
+  {
+    image: img5,
   },
 ];
 
@@ -244,6 +269,10 @@ const HowItWorks = () => {
 
         {isMobile ? <MobileStepper /> : <DesktopStepper />}
       </Container>
+
+      <Box sx={{ mt: 10 }}>
+        <Marque data={marqueeData} title="Find Us On" />
+      </Box>
     </Box>
   );
 };
