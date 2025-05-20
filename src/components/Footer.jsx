@@ -58,10 +58,24 @@ const Footer = () => {
                 future of finance.
               </Typography>
               <Stack direction="row" spacing={1}>
-                <IconButton color="inherit" aria-label="Twitter" size="small">
+                <IconButton
+                  color="inherit"
+                  aria-label="Twitter"
+                  size="small"
+                  onClick={() =>
+                    window.open("https://twitter.com/qusdttoken", "_blank")
+                  }
+                >
                   <TwitterIcon />
                 </IconButton>
-                <IconButton color="inherit" aria-label="Telegram" size="small">
+                <IconButton
+                  color="inherit"
+                  aria-label="Telegram"
+                  size="small"
+                  onClick={() =>
+                    window.open("https://t.me/qUSDTtoken", "_blank")
+                  }
+                >
                   <TelegramIcon />
                 </IconButton>
                 <IconButton color="inherit" aria-label="GitHub" size="small">
