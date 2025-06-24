@@ -21,7 +21,6 @@ import { getBalance, readContract, writeContract } from "@wagmi/core";
 import abi from "../utils/Abi.json";
 import tokenAbi from "../utils/TokenAbi.json";
 import { wagmiAdapter } from "../wagmi";
-import { log } from "util";
 
 const StyledTextField = styled(TextField)(({ theme }) => ({
   "& .MuiOutlinedInput-root": {
@@ -73,7 +72,7 @@ const CountdownTimer = () => {
     return { days: 0, hours: 0, minutes: 0, seconds: 0 }; // Presale ended
   };
 
-  const presaleEndTime = 1749673797; //update time here in seconds
+  const presaleEndTime = 1758567600; //update time here in seconds
 
   useEffect(() => {
     const timer = setInterval(() => {

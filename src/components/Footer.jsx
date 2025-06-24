@@ -78,15 +78,6 @@ const Footer = () => {
                 >
                   <TelegramIcon />
                 </IconButton>
-                <IconButton color="inherit" aria-label="GitHub" size="small">
-                  <GitHubIcon />
-                </IconButton>
-                <IconButton color="inherit" aria-label="LinkedIn" size="small">
-                  <LinkedInIcon />
-                </IconButton>
-                <IconButton color="inherit" aria-label="Reddit" size="small">
-                  <RedditIcon />
-                </IconButton>
               </Stack>
             </Box>
           </Grid>
